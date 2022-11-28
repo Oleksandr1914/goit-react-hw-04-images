@@ -11,11 +11,13 @@ const App = () => {
   const [loader, setLoader] = useState('off');
   const [visabiliti, setVisabiliti] = useState(false);
   const [card, setCard] = useState('');
+  const [submitBool, setSubmitBool] = useState(false);
 
   const onSupmit = data => {
     setNumber(1);
     setLoader('onSubmit');
     setName(data);
+    setSubmitBool(true);
   };
 
   useEffect(() => {
@@ -27,15 +29,19 @@ const App = () => {
     )
       .then(respons => respons.json())
       .then(res => {
+        if (submitBool) {
+          return setResponse(res.hits);
+        }
         return setResponse(prev => [...prev, ...res.hits]);
       })
       .catch(error => console.log(error));
     setLoader('off');
-  }, [name, number]);
+  }, [name, number, submitBool]);
 
   const onClickLoadMore = () => {
     setNumber(number + 1);
     setLoader('onClick');
+    setSubmitBool(false);
   };
 
   const onItem = event => {
